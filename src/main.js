@@ -12,8 +12,8 @@ const languages = [
   ['fil','🇵🇭','Filipino'],['sw','🇰🇪','Kiswahili'],['ta','🇱🇰','தமிழ்'],['pa','🇮🇳','ਪੰਜਾਬੀ']
 ];
 const quickActions = [
-  ['▦','Book Consultation','consult'],
-  ['✚','Find Hospitals','hospitals'],
+  ['▦','Book Your Consultation','consult'],
+  ['✈','Plan Your Medical Trip','trip'],
   ['⚕','Explore Treatments','treatments'],
   ['◉','24/7 Patient Assistance','support']
 ];
@@ -46,7 +46,7 @@ app.innerHTML = `
     <div class="welcome-copy">
       <h2>Hello! <span class="wave">👋</span></h2>
       <h3>Welcome to <strong>Noor MedWell.</strong><br>How can I assist you today?</h3>
-      <p>Get instant help with our services,<br class="desktop-break"> appointments, and more.</p>
+      <p>Personal guidance for treatment options, hospital matching, travel coordination and support throughout your medical journey.</p>
       <span class="online"><i></i> Online 24/7</span>
     </div>
     <div class="welcome-leaf">❧</div>
@@ -56,7 +56,20 @@ app.innerHTML = `
     ${quickActions.map((a,i)=>`<button class="quick-card" type="button" data-action="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
   </section>
 
-  <section class="language-strip" aria-label="Popular languages">
+  <section class="how-we-work" aria-labelledby="howWeWorkTitle">
+  <div class="section-kicker">A CLEAR, SUPPORTED PROCESS</div>
+  <h2 id="howWeWorkTitle">How We Work</h2>
+  <p class="how-intro">A discreet, end-to-end medical journey. We combine clinical matching, travel coordination, multilingual support and post-treatment follow-up so every stage feels structured and reassuring.</p>
+  <div class="work-steps">
+    <article class="work-step"><span>01</span><div><h3>Consultation</h3><p>We review your goals, medical history and priorities to understand the right direction.</p></div></article>
+    <article class="work-step"><span>02</span><div><h3>Matching</h3><p>We identify suitable hospitals, doctors and treatment options within our trusted network.</p></div></article>
+    <article class="work-step"><span>03</span><div><h3>Coordination</h3><p>Appointments, travel, accommodation, interpretation and logistics are coordinated on your behalf, as agreed for your journey.</p></div></article>
+    <article class="work-step"><span>04</span><div><h3>Aftercare</h3><p>We remain available for updates, follow-up communication and recovery support.</p></div></article>
+  </div>
+  <p class="network-note"><strong>Our trusted partner network</strong><br>We work with healthcare providers and specialists in our network. Noor MedWell helps coordinate your options and communication; diagnosis and treatment decisions remain with your licensed medical team.</p>
+</section>
+
+<section class="language-strip" aria-label="Popular languages">
     <button data-lang="en"><span>🇬🇧</span> English</button><i></i>
     <button data-lang="tr"><span>🇹🇷</span> Türkçe</button><i></i>
     <button data-lang="de"><span>🇩🇪</span> Deutsch</button><i></i>
@@ -72,12 +85,12 @@ app.innerHTML = `
   <section class="chat-panel">
     <div class="chat-heading"><div><span class="chat-dot"></span><strong>Noor MedWell Concierge</strong><small>AI assistant · Multilingual support</small></div><button id="clearChat" title="Clear conversation">↺</button></div>
     <div class="messages" id="messages" aria-live="polite">
-      <div class="message assistant"><div class="message-avatar">N</div><div class="bubble">Welcome to Noor MedWell. I can help you explore hospitals, treatments and the next steps in your medical journey. Which country are you contacting us from, and what support do you need?</div></div>
+      <div class="message assistant"><div class="message-avatar">N</div><div class="bubble">Welcome to Noor MedWell. We coordinate medical journeys for international patients, from understanding your needs and matching you with suitable healthcare providers to travel arrangements and aftercare coordination. What treatment or support are you looking for, and which country are you contacting us from?</div></div>
     </div>
     <div class="attachment-preview" id="attachmentPreview" hidden></div>
     <div class="composer">
       <label class="attach-button" for="imageInput" title="Attach a medical image" aria-label="Attach an image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m21 15-5-5L5 20"></path></svg><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label>
-      <textarea id="messageInput" rows="1" placeholder="Ask about hospitals, treatments or your medical journey..." aria-label="Write a message"></textarea>
+      <textarea id="messageInput" rows="1" placeholder="Ask about your treatment or medical journey..." aria-label="Write a message"></textarea>
       <button class="send-button" id="sendButton" aria-label="Send message">➤</button>
     </div>
     <p class="disclaimer">AI concierge for information and coordination only — not a medical diagnosis or emergency service.</p>
@@ -88,7 +101,7 @@ app.innerHTML = `
   <div class="journey-sheet"><header><div><small>NOOR MEDWELL CONCIERGE</small><h2 id="journeyTitle">Explore your care options</h2></div><button class="journey-close" type="button" data-close-panel aria-label="Close">×</button></header><div class="journey-content" id="journeyContent"></div></div>
 </section>
 <div class="toast" id="toast" role="status"></div>
-<div class="mobile-menu" id="mobileMenu" hidden><button data-scroll="concierge">Talk to Concierge</button><a href="https://www.noormedwell.com/clinics" target="_blank" rel="noreferrer">Explore Hospitals</a><a href="https://www.noormedwell.com/treatments" target="_blank" rel="noreferrer">Treatments</a><a href="https://wa.me/905428440488" target="_blank" rel="noreferrer">WhatsApp Concierge</a></div>
+<div class="mobile-menu" id="mobileMenu" hidden><button data-scroll="concierge">Talk to Concierge</button><button data-open-journey="trip">Plan Your Medical Trip</button><button data-open-journey="treatments">Explore Treatments</button><button data-open-journey="support">24/7 Patient Assistance</button></div>
 `;
 
 const $ = id => document.getElementById(id);
@@ -160,41 +173,67 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeJourney();});
 function startGuidedFlow(kind){
  closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});
  const prompts={
-  consult:"I'd like to request a consultation. Please guide me step by step. Ask me one question at a time about my treatment needs, country, preferred hospital or specialist, medical history or reports (if relevant), travel timing, and contact details. At the end, prepare a clear consultation summary for Noor MedWell's human team. Do not claim it has been sent unless the system confirms submission.",
-  support:"I need patient assistance. Please help me now, even if the office is closed. Ask what I need help with, explain Noor MedWell's process and next steps, and prepare anything that needs a human coordinator for follow-up during office hours. For emergencies, direct me to local emergency services.",
-  hospital:"Help me find a suitable hospital in Turkey. Ask which city or treatment I need, then help me compare Noor MedWell's listed partner hospitals and show their locations on the map."
+  consult:"I would like to book a private consultation with Noor MedWell. Please guide me one question at a time. First ask which country I am contacting you from and what treatment or medical support I am looking for. Then collect only the relevant details: my goals, any relevant medical history or reports I choose to share, preferred timing, travel considerations, and a safe contact method. Explain that Noor MedWell reviews my enquiry and coordinates suitable hospitals or specialists in its network. At the end, prepare a clear summary for the Noor MedWell team. Do not say a request has been submitted or sent unless a connected submission system confirms it.",
+  trip:"I want to plan a medical trip with Noor MedWell. Please guide me through the process one question at a time. Explain how Noor MedWell reviews my treatment goals, matches my needs with suitable hospitals and doctors in its trusted network, coordinates appointments and helps plan travel, accommodation, interpretation and local logistics where available. Ask my country, treatment interest, preferred destination or timing, travel party and support needs. Do not promise a hospital match, visa approval, price, appointment or service until confirmed by the Noor MedWell team.",
+  support:"I need patient assistance from Noor MedWell. Please help me understand the medical tourism process, treatment coordination, hospital matching, travel planning or next steps. Ask what I need help with and guide me clearly. The AI assistant is available 24/7, but a human coordinator may respond during the team's working hours. Prepare a concise handover summary if human follow-up is needed. For urgent or life-threatening symptoms, tell me to contact local emergency services immediately.",
+  hospital:"I would like Noor MedWell to help match me with a suitable hospital or specialist. Ask about my treatment needs, country, preferred city and timing, then explain that Noor MedWell will review suitable providers in its trusted network and coordinate the next steps. Do not show a public directory or encourage me to bypass Noor MedWell."
  };
  $('messageInput').value=prompts[kind]||prompts.support;$('messageInput').focus();
-};
+}
+function openPlanPanel(){
+ openJourney('Plan Your Medical Trip',`<p class="journey-intro">Planning treatment in another country can feel complicated. Noor MedWell helps bring the medical and travel arrangements together, so you have one coordinated point of contact from your first enquiry through your return and follow-up.</p>
+ <div class="journey-highlight"><strong>Your journey, coordinated step by step</strong><p>Tell us what care you are exploring. Our team reviews your priorities and helps identify suitable options within its trusted healthcare network.</p></div>
+ <div class="journey-card"><div class="journey-symbol">01</div><div><h3>Tell us what you need</h3><p>Share your treatment interest, country, goals, preferred timing and any relevant medical information you are comfortable providing.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">02</div><div><h3>Hospital and doctor matching</h3><p>Noor MedWell reviews your needs and identifies suitable hospitals, doctors and care pathways within its partner network. Clinical suitability is assessed by the medical providers.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">03</div><div><h3>Travel and appointment coordination</h3><p>When agreed and available, the team helps coordinate appointments, travel timing, accommodation, interpretation, airport transfers and local logistics.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">04</div><div><h3>Support and aftercare</h3><p>Noor MedWell helps with communication, follow-up arrangements and recovery-related coordination after treatment.</p></div></div>
+ <p class="journey-note">Noor MedWell coordinates your medical journey; hospitals and licensed clinicians provide medical assessments, diagnoses and treatment. Specific services, costs and arrangements are confirmed individually.</p>
+ <button class="journey-primary" type="button" data-start-trip-chat>Start planning my medical trip</button>`);
+}
+function openConsultPanel(){
+ openJourney('Book Your Consultation',`<p class="journey-intro">Start with a private, no-obligation enquiry. A Noor MedWell coordinator can review your priorities and help you understand suitable hospitals, specialists and next steps.</p>
+ <div class="journey-card"><div class="journey-symbol">1</div><div><h3>Tell us about yourself</h3><p>Your name, country of residence and the best way for the team to contact you.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">2</div><div><h3>Describe your treatment needs</h3><p>Tell us which treatment you are exploring, your goals and any relevant medical background. You can mention reports you may wish to share securely with the care team.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">3</div><div><h3>Discuss timing and priorities</h3><p>Share your preferred timeframe, travel considerations, language needs and questions about the process.</p></div></div>
+ <div class="journey-highlight"><strong>What happens next?</strong><p>Your enquiry can be organised into a clear summary for Noor MedWell's team to review. A consultation, provider match or appointment is not confirmed until the team contacts you.</p></div>
+ <button class="journey-primary" type="button" data-start-consult-chat>Begin my consultation enquiry</button>`);
+}
+function openSupportPanel(){
+ openJourney('24/7 Patient Assistance',`<p class="journey-intro">You can ask the Noor MedWell AI concierge questions at any time, day or night. It can explain the medical tourism process, help you understand the next steps and organise your questions for the coordination team.</p>
+ <div class="journey-card"><div class="journey-symbol">◎</div><div><h3>Help whenever you need it</h3><p>Get guidance about treatments listed by Noor MedWell, the consultation process, hospital matching and preparing for a medical trip.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">↗</div><div><h3>Human team follow-up</h3><p>If your question needs a coordinator, the assistant can prepare a summary for follow-up. Human response times depend on the team's working hours and availability.</p></div></div>
+ <div class="journey-card"><div class="journey-symbol">+</div><div><h3>Medical and emergency boundaries</h3><p>The AI assistant does not diagnose, prescribe or replace a doctor. For urgent or life-threatening symptoms, contact local emergency services immediately.</p></div></div>
+ <button class="journey-primary" type="button" data-start-support-chat>Chat with patient assistance</button>`);
+}
 document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',()=>{
  const action=b.dataset.action;
- if(action==='consult'){startGuidedFlow('consult');return;}
- if(action==='support'){startGuidedFlow('support');return;}
- if(action==='hospitals'){
-  openJourney('Find a partner hospital',`<p class="journey-intro">Explore Noor MedWell's listed partner hospitals in Istanbul. Choose a hospital to view its location in Google Maps.</p>
-  <article class="journey-card"><img src="https://res.cloudinary.com/dwclhxhfb/image/upload/v1/media/clinics/featured/2026/04/acibadem-hospital_featured_mu23ng" alt="Acıbadem Hospital"><div><h3>Acıbadem Hospital</h3><p>Istanbul, Türkiye · Multi-specialty care, oncology, organ transplantation and robotic surgery.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Acibadem+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
-  <article class="journey-card"><img src="https://res.cloudinary.com/dwclhxhfb/image/upload/v1/media/clinics/featured/2026/04/liv-hospital_featured_fmqnbl" alt="Liv Hospital"><div><h3>Liv Hospital</h3><p>Istanbul, Türkiye · Robotic surgery, organ transplantation, oncology and international patient services.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Liv+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
-  <article class="journey-card"><img src="https://res.cloudinary.com/dwclhxhfb/image/upload/v1/media/clinics/featured/2026/04/medicana-international_featured_rqbspl" alt="Medicana International"><div><h3>Medicana International</h3><p>Istanbul, Türkiye · Broad medical services, fertility, plastic surgery and rehabilitation.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Medicana+International+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
-  <article class="journey-card"><img src="https://res.cloudinary.com/dwclhxhfb/image/upload/v1/media/clinics/featured/2026/04/memorial-hospital_featured_odyl4n" alt="Memorial Hospital"><div><h3>Memorial Hospital</h3><p>Istanbul, Türkiye · Organ transplantation, cardiac surgery and oncology.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Memorial+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
-  <article class="journey-card"><img src="https://res.cloudinary.com/dwclhxhfb/image/upload/v1/media/clinics/featured/2026/04/hisar-hospital_featured_s2ayuj" alt="Hisar Hospital"><div><h3>Hisar Hospital</h3><p>Istanbul, Türkiye · Diagnostics, cardiac care, orthopedics and women's health.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Hisar+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
-  <button class="journey-primary" type="button" data-start-hospital-chat>Help me choose a hospital</button>`);
-  return;
- }
+ if(action==='consult'){openConsultPanel();return;}
+ if(action==='trip'){openPlanPanel();return;}
+ if(action==='support'){openSupportPanel();return;}
  if(action==='treatments'){
-  openJourney('Explore treatments',`<p class="journey-intro">Browse Noor MedWell's treatment pathways. Select a category to learn what it covers, then ask the AI concierge about your goals and next steps.</p>
-  <article class="journey-card"><div class="journey-symbol">♡</div><div><h3>Checkup Programs</h3><p>Comprehensive health screening and preventive care packages designed to detect health issues early and support wellness.</p><button type="button" data-treatment="Checkup Programs">Explore this category →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">✧</div><div><h3>Plastic Surgery & Cosmetology</h3><p>Aesthetic procedures and cosmetic surgery options. Examples include rhinoplasty (nose surgery).</p><a href="https://www.noormedwell.com/treatments/plastic-surgery-cosmetology/rhinoplasty-nose-surgery/" target="_blank" rel="noreferrer">Rhinoplasty details ↗</a><button type="button" data-treatment="Plastic Surgery & Cosmetology">Ask about this category →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">✦</div><div><h3>Hair Transplant</h3><p>Hair restoration options including FUE, DHI and Sapphire methods.</p><a href="https://www.noormedwell.com/treatments/hair-transplant/dhi-hair-transplant/" target="_blank" rel="noreferrer">DHI Hair Transplant details ↗</a><button type="button" data-treatment="Hair Transplant">Ask about this category →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">❋</div><div><h3>Stem Cell Therapy</h3><p>A regenerative medicine category. Specific applications and suitability require specialist assessment.</p><button type="button" data-treatment="Stem Cell Therapy">Ask about this category →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">☼</div><div><h3>Rejuvenation</h3><p>Anti-aging and rejuvenation treatment pathways. Available options depend on clinical assessment.</p><button type="button" data-treatment="Rejuvenation">Ask about this category →</button></div></article>`);
+  openJourney('Explore Treatments',`<p class="journey-intro">Explore medical treatment categories Noor MedWell coordinates through its healthcare network. Choose a category to discuss your goals and learn what information may help the consultation. Treatment suitability must be assessed by a licensed clinician.</p>
+  <article class="journey-card"><div class="journey-symbol">♡</div><div><h3>Checkup Programs</h3><p>Comprehensive health screening and preventive-care packages intended to help review general health and identify areas that may need medical attention.</p><button type="button" data-treatment="Checkup Programs">Ask about checkup programs →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">✧</div><div><h3>Plastic Surgery &amp; Cosmetology</h3><p>Aesthetic and reconstructive procedure pathways coordinated with relevant specialists. Options may include procedures such as rhinoplasty; individual assessment is essential.</p><button type="button" data-treatment="Plastic Surgery & Cosmetology">Ask about plastic surgery and cosmetology →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">✦</div><div><h3>Hair Transplant</h3><p>Hair-restoration pathways that may include FUE, DHI and Sapphire techniques. A specialist assesses suitability, donor area, expectations and aftercare.</p><button type="button" data-treatment="Hair Transplant">Ask about hair transplant →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">❋</div><div><h3>Stem Cell Therapy</h3><p>Regenerative-medicine services listed by Noor MedWell. Evidence, approved uses, availability, risks and suitability vary by condition and must be discussed with qualified specialists.</p><button type="button" data-treatment="Stem Cell Therapy">Ask about stem cell therapy →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">☼</div><div><h3>Rejuvenation</h3><p>Medical and aesthetic options focused on skin health and rejuvenation. The appropriate approach depends on an individual consultation and clinical assessment.</p><button type="button" data-treatment="Rejuvenation">Ask about rejuvenation →</button></div></article>
+  <p class="journey-note">The categories are an introduction, not a diagnosis or recommendation. Ask Noor MedWell for current provider availability, clinical details, risks, costs and treatment arrangements.</p>
+  <button class="journey-primary" type="button" data-start-consult-chat>Discuss a treatment with Noor MedWell</button>`);
  }
 }));
 journeyContent.addEventListener('click',e=>{
+ if(e.target.closest('[data-start-trip-chat]')){startGuidedFlow('trip');return;}
+ if(e.target.closest('[data-start-consult-chat]')){startGuidedFlow('consult');return;}
+ if(e.target.closest('[data-start-support-chat]')){startGuidedFlow('support');return;}
  const treatment=e.target.closest('[data-treatment]')?.dataset.treatment;
- if(treatment){closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});$('messageInput').value="Please explain Noor MedWell's "+treatment+" options, what they generally involve, who may be assessed for them, possible risks and recovery considerations, and what information a consultant would need. Do not diagnose or decide my suitability."; $('messageInput').focus();}
- if(e.target.closest('[data-start-hospital-chat]'))startGuidedFlow('hospital');
+ if(treatment){closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});$('messageInput').value="I would like to learn about Noor MedWell's "+treatment+" pathway. Please explain what it generally involves, what questions I should ask a licensed specialist, possible risks and recovery considerations, and what information the coordination team needs to help me explore suitable providers. Please ask me one question at a time and do not diagnose or decide my suitability."; $('messageInput').focus();}
 });
-
+document.querySelectorAll('.mobile-menu [data-open-journey]').forEach(b=>b.addEventListener('click',()=>{
+ $('mobileMenu').hidden=true;
+ if(b.dataset.openJourney==='trip')openPlanPanel();
+ else if(b.dataset.openJourney==='treatments')document.querySelector('[data-action="treatments"]').click();
+ else openSupportPanel();
+}));
 function renderMessage(role,text){
  const row=document.createElement('div');row.className='message '+role;
  if(role==='assistant'){const av=document.createElement('div');av.className='message-avatar';av.textContent='N';row.append(av);}
