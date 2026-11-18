@@ -267,3 +267,13 @@ body.panel-open{overflow:hidden}
 .journey-symbol{font-size:17px;font-weight:700}
 @media(max-width:760px){.work-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:460px){.how-we-work{margin:18px 0 12px;padding:16px;border-radius:19px}.work-steps{grid-template-columns:1fr;gap:8px}.work-step{padding:12px}.how-intro{font-size:12px}}
+
+
+.partners-section{margin:22px 0 18px;padding:clamp(18px,3vw,28px);border:1px solid #e7dccb;border-radius:24px;background:#fffaf3;text-align:center}
+.partners-section h2{margin:7px 0 8px;font:600 clamp(25px,4vw,34px) 'Playfair Display',serif;color:#3c2e1e}
+.partners-section>p{max-width:760px;margin:0 auto 18px;color:#716657;font-size:13px;line-height:1.6}
+.partner-logos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:center}
+.partner-logo{min-height:82px;padding:12px;display:grid;place-items:center;border:1px solid #eee5d9;border-radius:14px;background:#fff}
+.partner-logo img{display:block;width:100%;height:52px;object-fit:contain}
+.partners-section>small{display:block;margin-top:13px;color:#948879;font-size:10px;line-height:1.4}
+@media(max-width:520px){.partners-section{padding:16px;margin:16px 0}.partner-logos{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.partner-logo{min-height:66px;padding:9px}.partner-logo img{height:44px}}
