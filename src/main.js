@@ -221,8 +221,17 @@ journeyContent.addEventListener('click',e=>{
  if(partner){
   closeJourney();
   $('concierge').scrollIntoView({behavior:'smooth',block:'start'});
-  $('messageInput').value="A website visitor has selected a partner of interest: "+partner+". Please acknowledge their interest in "+partner+" and explain that Noor MedWell coordinates the enquiry and helps assess whether this provider may fit their needs. Ask one question at a time to collect: (1) treatment or medical service they are exploring, (2) country they are contacting us from, (3) brief non-sensitive summary of what they need, (4) preferred timing, (5) full name, and (6) preferred contact method and contact details. Ask permission before collecting or sharing personal information. Do not ask for detailed medical records or sensitive health documents in this chat. Do not promise provider availability, clinical suitability, prices or appointments. At the end, summarize the selected partner and enquiry details for the visitor. Be transparent that this chat does not automatically submit the enquiry to Noor MedWell staff unless a connected submission system confirms it.";
-  sendMessage();
+  const interestId=crypto.randomUUID();
+  (async()=>{
+   let saved=false;
+   try{
+    const result=await fetch('/api/partner-interest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:interestId,partner,language:languages.find(x=>x[0]===selectedLanguage)?.[2]||'English'})});
+    const data=await result.json();saved=!!(result.ok&&data.saved);
+   }catch{}
+   toast(saved?'Your interest in '+partner+' has been recorded.':'The assistant can note your interest in this chat, but company lead storage is not connected yet.');
+   $('messageInput').value="A visitor has selected this Noor MedWell partner: "+partner+". "+(saved?"The selected partner interest has been recorded for the Noor MedWell team. ":"The partner interest could not be saved to the company lead database, so do not claim it has been recorded for staff. ")+ "Please acknowledge the visitor's interest and explain that Noor MedWell coordinates the enquiry and helps assess whether this provider may fit their needs. Ask one question at a time to collect: (1) the treatment or medical service they are exploring, (2) country of residence, (3) brief non-sensitive summary of what they need, (4) preferred timing, (5) full name, and (6) preferred contact method and contact details. Ask permission before collecting or sharing personal information. Do not ask for detailed medical records or sensitive health documents in this chat. Do not promise provider availability, clinical suitability, prices or appointments. At the end, summarize the selected partner and enquiry details. Do not claim that the patient's contact details or full enquiry have been sent to staff; only the partner-interest record is saved if the API confirms it.";
+   sendMessage();
+  })();
   return;
  }
  if(e.target.closest('[data-start-trip-chat]')){startGuidedFlow('trip');return;}
