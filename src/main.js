@@ -56,36 +56,6 @@ app.innerHTML = `
     ${quickActions.map((a,i)=>`<button class="quick-card" type="button" data-action="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
   </section>
 
-  <section class="partners-section" aria-labelledby="partnersTitle">
-  <div class="section-kicker">A NETWORK BUILT AROUND PATIENT NEEDS</div>
-  <h2 id="partnersTitle">Our Partners</h2>
-  <p>We coordinate with trusted hospital groups and care institutions across Turkey and the wider medical travel network. Noor MedWell helps you navigate your options and remains your coordination contact throughout the journey.</p>
-  <div class="partner-logos" aria-label="Noor MedWell partner institutions">
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-1.png" alt="Noor MedWell partner institution 1" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-2.png" alt="Noor MedWell partner institution 2" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-3.png" alt="Noor MedWell partner institution 3" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-4.png" alt="Noor MedWell partner institution 4" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-5.png" alt="Noor MedWell partner institution 5" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-6.png" alt="Noor MedWell partner institution 6" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-7.png" alt="Noor MedWell partner institution 7" loading="lazy"></div>
-    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-8.png" alt="Noor MedWell partner institution 8" loading="lazy"></div>
-  </div>
-  <small>Partner logos are displayed as provided on Noor MedWell's official website. Provider selection and availability are confirmed individually.</small>
-</section>
-
-<section class="how-we-work" aria-labelledby="howWeWorkTitle">
-  <div class="section-kicker">A CLEAR, SUPPORTED PROCESS</div>
-  <h2 id="howWeWorkTitle">How We Work</h2>
-  <p class="how-intro">A discreet, end-to-end medical journey. We combine clinical matching, travel coordination, multilingual support and post-treatment follow-up so every stage feels structured and reassuring.</p>
-  <div class="work-steps">
-    <article class="work-step"><span>01</span><div><h3>Consultation</h3><p>We review your goals, medical history and priorities to understand the right direction.</p></div></article>
-    <article class="work-step"><span>02</span><div><h3>Matching</h3><p>We identify suitable hospitals, doctors and treatment options within our trusted network.</p></div></article>
-    <article class="work-step"><span>03</span><div><h3>Coordination</h3><p>Appointments, travel, accommodation, interpretation and logistics are coordinated on your behalf, as agreed for your journey.</p></div></article>
-    <article class="work-step"><span>04</span><div><h3>Aftercare</h3><p>We remain available for updates, follow-up communication and recovery support.</p></div></article>
-  </div>
-  <p class="network-note"><strong>Our trusted partner network</strong><br>We work with healthcare providers and specialists in our network. Noor MedWell helps coordinate your options and communication; diagnosis and treatment decisions remain with your licensed medical team.</p>
-</section>
-
 <section class="language-strip" aria-label="Popular languages">
     <button data-lang="en"><span>🇬🇧</span> English</button><i></i>
     <button data-lang="tr"><span>🇹🇷</span> Türkçe</button><i></i>
@@ -208,12 +178,20 @@ function openPlanPanel(){
  <button class="journey-primary" type="button" data-start-trip-chat>Start planning my medical trip</button>`);
 }
 function openConsultPanel(){
- openJourney('Book Your Consultation',`<p class="journey-intro">Start with a private, no-obligation enquiry. A Noor MedWell coordinator can review your priorities and help you understand suitable hospitals, specialists and next steps.</p>
- <div class="journey-card"><div class="journey-symbol">1</div><div><h3>Tell us about yourself</h3><p>Your name, country of residence and the best way for the team to contact you.</p></div></div>
- <div class="journey-card"><div class="journey-symbol">2</div><div><h3>Describe your treatment needs</h3><p>Tell us which treatment you are exploring, your goals and any relevant medical background. You can mention reports you may wish to share securely with the care team.</p></div></div>
- <div class="journey-card"><div class="journey-symbol">3</div><div><h3>Discuss timing and priorities</h3><p>Share your preferred timeframe, travel considerations, language needs and questions about the process.</p></div></div>
- <div class="journey-highlight"><strong>What happens next?</strong><p>Your enquiry can be organised into a clear summary for Noor MedWell's team to review. A consultation, provider match or appointment is not confirmed until the team contacts you.</p></div>
- <button class="journey-primary" type="button" data-start-consult-chat>Begin my consultation enquiry</button>`);
+ openJourney('Book Your Consultation',`<p class="journey-intro">Tell Noor MedWell what care you are exploring. We will help review your priorities and coordinate the next step with a suitable hospital or specialist from our partner network.</p>
+ <div class="journey-highlight"><strong>How your enquiry works</strong><p>Choose a partner you would like to learn more about, or skip this section if you are not sure. Your interest will be passed to the AI concierge, which will guide you through the details one question at a time.</p></div>
+ <h3 class="partner-picker-title">Explore our hospital partners</h3>
+ <p class="partner-picker-intro">These healthcare groups are listed in Noor MedWell's partner network. Read a short introduction and tell us if one interests you. Noor MedWell remains your coordination contact.</p>
+ <div class="partner-interest-list">
+  <article class="partner-interest-card"><div class="partner-wordmark acibadem">ACIBADEM</div><div class="partner-interest-copy"><h3>Acıbadem Healthcare Group</h3><p>A large, multi-specialty healthcare network founded in Istanbul. Its hospitals and clinics cover a broad range of medical fields and have dedicated international patient services.</p><button type="button" data-partner-interest="Acıbadem Healthcare Group">I'm interested in Acıbadem</button></div></article>
+  <article class="partner-interest-card"><div class="partner-wordmark liv">LIV HOSPITAL</div><div class="partner-interest-copy"><h3>Liv Hospital</h3><p>A multi-hospital healthcare group operating in Turkey and Azerbaijan, with specialist physicians, modern medical technology and international patient coordination.</p><button type="button" data-partner-interest="Liv Hospital">I'm interested in Liv Hospital</button></div></article>
+  <article class="partner-interest-card"><div class="partner-wordmark medicana">MEDICANA</div><div class="partner-interest-copy"><h3>Medicana Health Group</h3><p>A healthcare group with hospitals in several Turkish cities and abroad. Its listed specialties include oncology, organ transplantation, neurosurgery, IVF, cardiovascular care and orthopaedics.</p><button type="button" data-partner-interest="Medicana Health Group">I'm interested in Medicana</button></div></article>
+  <article class="partner-interest-card"><div class="partner-wordmark memorial">memorial</div><div class="partner-interest-copy"><h3>Memorial Hospitals Group</h3><p>A Turkish hospital network with a broad range of departments and international patient services. Its clinical focus includes organ transplantation, cardiovascular care, oncology and IVF.</p><button type="button" data-partner-interest="Memorial Hospitals Group">I'm interested in Memorial</button></div></article>
+  <article class="partner-interest-card"><div class="partner-wordmark hisar">HİSAR</div><div class="partner-interest-copy"><h3>Hisar Hospital Intercontinental</h3><p>An Istanbul hospital with JCI accreditation and multidisciplinary specialist services, including oncology, robotic and cardiac surgery, urology and eye care.</p><button type="button" data-partner-interest="Hisar Hospital Intercontinental">I'm interested in Hisar Hospital</button></div></article>
+ </div>
+ <p class="journey-note">The summaries are general introductions, not medical recommendations. A hospital's services, accreditation status, specialist availability and suitability must be confirmed for your individual case. Noor MedWell coordinates the enquiry; the hospital's licensed clinicians make medical decisions.</p>
+ <div class="journey-highlight"><strong>Prefer to start without choosing a partner?</strong><p>No problem. Tell us about your treatment needs and Noor MedWell can help explore suitable options.</p></div>
+ <button class="journey-primary" type="button" data-start-consult-chat>Continue without choosing a partner</button>`);
 }
 function openSupportPanel(){
  openJourney('24/7 Patient Assistance',`<p class="journey-intro">You can ask the Noor MedWell AI concierge questions at any time, day or night. It can explain the medical tourism process, help you understand the next steps and organise your questions for the coordination team.</p>
@@ -239,6 +217,14 @@ document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',(
  }
 }));
 journeyContent.addEventListener('click',e=>{
+ const partner=e.target.closest('[data-partner-interest]')?.dataset.partnerInterest;
+ if(partner){
+  closeJourney();
+  $('concierge').scrollIntoView({behavior:'smooth',block:'start'});
+  $('messageInput').value="A website visitor has selected a partner of interest: "+partner+". Please acknowledge their interest in "+partner+" and explain that Noor MedWell coordinates the enquiry and helps assess whether this provider may fit their needs. Ask one question at a time to collect: (1) treatment or medical service they are exploring, (2) country they are contacting us from, (3) brief non-sensitive summary of what they need, (4) preferred timing, (5) full name, and (6) preferred contact method and contact details. Ask permission before collecting or sharing personal information. Do not ask for detailed medical records or sensitive health documents in this chat. Do not promise provider availability, clinical suitability, prices or appointments. At the end, summarize the selected partner and enquiry details for the visitor. Be transparent that this chat does not automatically submit the enquiry to Noor MedWell staff unless a connected submission system confirms it.";
+  sendMessage();
+  return;
+ }
  if(e.target.closest('[data-start-trip-chat]')){startGuidedFlow('trip');return;}
  if(e.target.closest('[data-start-consult-chat]')){startGuidedFlow('consult');return;}
  if(e.target.closest('[data-start-support-chat]')){startGuidedFlow('support');return;}
