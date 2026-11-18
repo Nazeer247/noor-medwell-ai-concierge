@@ -203,17 +203,16 @@ function openSupportPanel(){
 document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',()=>{
  const action=b.dataset.action;
  if(action==='consult'){openConsultPanel();return;}
- if(action==='trip'){openPlanPanel();return;}
- if(action==='support'){openSupportPanel();return;}
+ if(action==='trip'){startGuidedFlow('trip');sendMessage();return;}
+ if(action==='support'){return;}
  if(action==='treatments'){
-  openJourney('Explore Treatments',`<p class="journey-intro">Explore medical treatment categories Noor MedWell coordinates through its healthcare network. Choose a category to discuss your goals and learn what information may help the consultation. Treatment suitability must be assessed by a licensed clinician.</p>
-  <article class="journey-card"><div class="journey-symbol">♡</div><div><h3>Checkup Programs</h3><p>Comprehensive health screening and preventive-care packages intended to help review general health and identify areas that may need medical attention.</p><button type="button" data-treatment="Checkup Programs">Ask about checkup programs →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">✧</div><div><h3>Plastic Surgery &amp; Cosmetology</h3><p>Aesthetic and reconstructive procedure pathways coordinated with relevant specialists. Options may include procedures such as rhinoplasty; individual assessment is essential.</p><button type="button" data-treatment="Plastic Surgery & Cosmetology">Ask about plastic surgery and cosmetology →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">✦</div><div><h3>Hair Transplant</h3><p>Hair-restoration pathways that may include FUE, DHI and Sapphire techniques. A specialist assesses suitability, donor area, expectations and aftercare.</p><button type="button" data-treatment="Hair Transplant">Ask about hair transplant →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">❋</div><div><h3>Stem Cell Therapy</h3><p>Regenerative-medicine services listed by Noor MedWell. Evidence, approved uses, availability, risks and suitability vary by condition and must be discussed with qualified specialists.</p><button type="button" data-treatment="Stem Cell Therapy">Ask about stem cell therapy →</button></div></article>
-  <article class="journey-card"><div class="journey-symbol">☼</div><div><h3>Rejuvenation</h3><p>Medical and aesthetic options focused on skin health and rejuvenation. The appropriate approach depends on an individual consultation and clinical assessment.</p><button type="button" data-treatment="Rejuvenation">Ask about rejuvenation →</button></div></article>
-  <p class="journey-note">The categories are an introduction, not a diagnosis or recommendation. Ask Noor MedWell for current provider availability, clinical details, risks, costs and treatment arrangements.</p>
-  <button class="journey-primary" type="button" data-start-consult-chat>Discuss a treatment with Noor MedWell</button>`);
+  closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});
+  const cards=[['♡','Checkup Programs','Health screening and preventive-care programmes.'],['✧','Plastic Surgery & Cosmetology','Aesthetic and reconstructive pathways, including rhinoplasty.'],['✦','Hair Transplant','Hair restoration options may include FUE, DHI and Sapphire techniques.'],['❋','Stem Cell Therapy','Regenerative-medicine services; evidence and suitability vary.'],['☼','Rejuvenation','Medical and aesthetic options focused on skin health.']];
+  const row=document.createElement('div');row.className='message assistant';
+  const av=document.createElement('div');av.className='message-avatar';av.textContent='N';row.append(av);
+  const bubble=document.createElement('div');bubble.className='bubble treatment-bubble';
+  bubble.innerHTML='<p>Explore treatment areas Noor MedWell can help coordinate. Swipe sideways to view the cards, then tap one to discuss it with me.</p><div class="treatment-carousel">'+cards.map(c=>'<button class="treatment-chat-card" type="button" data-treatment="'+c[1]+'"><span>'+c[0]+'</span><strong>'+c[1]+'</strong><small>'+c[2]+'</small><em>Explore →</em></button>').join('')+'</div><small class="treatment-disclaimer">Treatment suitability must be assessed by a licensed clinician.</small>';
+  row.append(bubble);$('messages').append(row);$('messages').scrollTop=$('messages').scrollHeight;return;
  }
 }));
 journeyContent.addEventListener('click',e=>{
@@ -234,18 +233,24 @@ journeyContent.addEventListener('click',e=>{
   })();
   return;
  }
- if(e.target.closest('[data-start-trip-chat]')){startGuidedFlow('trip');return;}
+ 
  if(e.target.closest('[data-start-consult-chat]')){startGuidedFlow('consult');return;}
- if(e.target.closest('[data-start-support-chat]')){startGuidedFlow('support');return;}
+ 
  const treatment=e.target.closest('[data-treatment]')?.dataset.treatment;
- if(treatment){closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});$('messageInput').value="I would like to learn about Noor MedWell's "+treatment+" pathway. Please explain what it generally involves, what questions I should ask a licensed specialist, possible risks and recovery considerations, and what information the coordination team needs to help me explore suitable providers. Please ask me one question at a time and do not diagnose or decide my suitability."; $('messageInput').focus();}
+ if(treatment){$('messageInput').value="I would like to learn about Noor MedWell's "+treatment+" pathway. Please explain what it generally involves, what questions I should ask a licensed specialist, possible risks and recovery considerations, and what information the coordination team needs to help me explore suitable providers. Please ask me one question at a time and do not diagnose or decide my suitability."; sendMessage();}
 });
 document.querySelectorAll('.mobile-menu [data-open-journey]').forEach(b=>b.addEventListener('click',()=>{
  $('mobileMenu').hidden=true;
- if(b.dataset.openJourney==='trip')openPlanPanel();
+ if(b.dataset.openJourney==='trip'){startGuidedFlow('trip');sendMessage();}
  else if(b.dataset.openJourney==='treatments')document.querySelector('[data-action="treatments"]').click();
- else openSupportPanel();
+ 
 }));
+$('messages').addEventListener('click',e=>{
+ const treatment=e.target.closest('[data-treatment]')?.dataset.treatment;
+ if(!treatment)return;
+ $('messageInput').value="I would like to learn about Noor MedWell's "+treatment+" pathway. Please explain it clearly, including questions to discuss with a licensed specialist and relevant risks or recovery considerations. Ask me one question at a time. Do not diagnose or decide my suitability.";
+ sendMessage();
+});
 function renderMessage(role,text){
  const row=document.createElement('div');row.className='message '+role;
  if(role==='assistant'){const av=document.createElement('div');av.className='message-avatar';av.textContent='N';row.append(av);}
