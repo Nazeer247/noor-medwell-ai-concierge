@@ -12,10 +12,10 @@ const languages = [
   ['fil','🇵🇭','Filipino'],['sw','🇰🇪','Kiswahili'],['ta','🇱🇰','தமிழ்'],['pa','🇮🇳','ਪੰਜਾਬੀ']
 ];
 const quickActions = [
-  ['▦','Book Consultation','https://www.noormedwell.com/consultations/request/'],
-  ['✚','Find Hospitals','https://www.noormedwell.com/clinics/'],
-  ['⚕','Explore Treatments','https://www.noormedwell.com/treatments/'],
-  ['◉','Patient Support','https://wa.me/905428440488']
+  ['▦','Book Consultation','consult'],
+  ['✚','Find Hospitals','hospitals'],
+  ['⚕','Explore Treatments','treatments'],
+  ['◉','24/7 Patient Assistance','support']
 ];
 const app = document.querySelector('#app');
 app.innerHTML = `
@@ -53,7 +53,7 @@ app.innerHTML = `
   </section>
 
   <section class="quick-grid" aria-label="Concierge services">
-    ${quickActions.map((a,i)=>`<button class="quick-card" type="button" data-destination="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
+    ${quickActions.map((a,i)=>`<button class="quick-card" type="button" data-action="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
   </section>
 
   <section class="language-strip" aria-label="Popular languages">
@@ -83,6 +83,10 @@ app.innerHTML = `
     <p class="disclaimer">AI concierge for information and coordination only — not a medical diagnosis or emergency service.</p>
   </section>
 </main>
+<section class="journey-panel" id="journeyPanel" hidden aria-modal="true" role="dialog" aria-labelledby="journeyTitle">
+  <div class="journey-backdrop" data-close-panel></div>
+  <div class="journey-sheet"><header><div><small>NOOR MEDWELL CONCIERGE</small><h2 id="journeyTitle">Explore your care options</h2></div><button class="journey-close" type="button" data-close-panel aria-label="Close">×</button></header><div class="journey-content" id="journeyContent"></div></div>
+</section>
 <div class="toast" id="toast" role="status"></div>
 <div class="mobile-menu" id="mobileMenu" hidden><button data-scroll="concierge">Talk to Concierge</button><a href="https://www.noormedwell.com/clinics" target="_blank" rel="noreferrer">Explore Hospitals</a><a href="https://www.noormedwell.com/treatments" target="_blank" rel="noreferrer">Treatments</a><a href="https://wa.me/905428440488" target="_blank" rel="noreferrer">WhatsApp Concierge</a></div>
 `;
@@ -110,7 +114,48 @@ document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',(
 document.addEventListener('click',e=>{if(!e.target.closest('.language-wrap')&&!e.target.closest('#moreLanguages')){$('languageMenu').hidden=true;$('languageTrigger').setAttribute('aria-expanded','false');}});
 $('menuButton').addEventListener('click',()=>{$('mobileMenu').hidden=!$('mobileMenu').hidden;});
 document.querySelectorAll('.mobile-menu [data-scroll]').forEach(b=>b.addEventListener('click',()=>{$('concierge').scrollIntoView({behavior:'smooth'});$('mobileMenu').hidden=true;}));
-document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',()=>{ const destination=b.dataset.destination; if(destination) window.location.assign(destination); }));
+const journeyPanel=$('journeyPanel'), journeyContent=$('journeyContent');
+function closeJourney(){journeyPanel.hidden=true;document.body.classList.remove('panel-open');}
+function openJourney(title,html){$('journeyTitle').textContent=title;journeyContent.innerHTML=html;journeyPanel.hidden=false;document.body.classList.add('panel-open');journeyContent.scrollTop=0;}
+journeyPanel.addEventListener('click',e=>{if(e.target.closest('[data-close-panel]'))closeJourney();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeJourney();});
+function startGuidedFlow(kind){
+ closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});
+ const prompts={
+  consult:"I'd like to request a consultation. Please guide me step by step. Ask me one question at a time about my treatment needs, country, preferred hospital or specialist, medical history or reports (if relevant), travel timing, and contact details. At the end, prepare a clear consultation summary for Noor MedWell's human team. Do not claim it has been sent unless the system confirms submission.",
+  support:"I need patient assistance. Please help me now, even if the office is closed. Ask what I need help with, explain Noor MedWell's process and next steps, and prepare anything that needs a human coordinator for follow-up during office hours. For emergencies, direct me to local emergency services.",
+  hospital:"Help me find a suitable hospital in Turkey. Ask which city or treatment I need, then help me compare Noor MedWell's listed partner hospitals and show their locations on the map."
+ };
+ $('messageInput').value=prompts[kind]||prompts.support;$('messageInput').focus();
+};
+document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',()=>{
+ const action=b.dataset.action;
+ if(action==='consult'){startGuidedFlow('consult');return;}
+ if(action==='support'){startGuidedFlow('support');return;}
+ if(action==='hospitals'){
+  openJourney('Find a partner hospital',`<p class="journey-intro">Explore Noor MedWell's listed partner hospitals in Istanbul. Choose a hospital to view its location in Google Maps.</p>
+  <article class="journey-card"><div class="journey-symbol">✚</div><div><h3>Acıbadem Hospital</h3><p>Istanbul, Türkiye · Multi-specialty care, oncology, organ transplantation and robotic surgery.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Acibadem+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
+  <article class="journey-card"><div class="journey-symbol">✚</div><div><h3>Liv Hospital</h3><p>Istanbul, Türkiye · Robotic surgery, organ transplantation, oncology and international patient services.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Liv+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
+  <article class="journey-card"><div class="journey-symbol">✚</div><div><h3>Medicana International</h3><p>Istanbul, Türkiye · Broad medical services, fertility, plastic surgery and rehabilitation.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Medicana+International+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
+  <article class="journey-card"><div class="journey-symbol">✚</div><div><h3>Memorial Hospital</h3><p>Istanbul, Türkiye · Organ transplantation, cardiac surgery and oncology.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Memorial+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
+  <article class="journey-card"><div class="journey-symbol">✚</div><div><h3>Hisar Hospital</h3><p>Istanbul, Türkiye · Diagnostics, cardiac care, orthopedics and women's health.</p><a target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query=Hisar+Hospital+Istanbul+Turkey">View on Google Maps ↗</a></div></article>
+  <button class="journey-primary" type="button" data-start-hospital-chat>Help me choose a hospital</button>`);
+  return;
+ }
+ if(action==='treatments'){
+  openJourney('Explore treatments',`<p class="journey-intro">Browse Noor MedWell's treatment pathways. Select a category to learn what it covers, then ask the AI concierge about your goals and next steps.</p>
+  <article class="journey-card"><div class="journey-symbol">♡</div><div><h3>Checkup Programs</h3><p>Comprehensive health screening and preventive care packages designed to detect health issues early and support wellness.</p><button type="button" data-treatment="Checkup Programs">Explore this category →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">✧</div><div><h3>Plastic Surgery & Cosmetology</h3><p>Aesthetic procedures and cosmetic surgery options. Examples include rhinoplasty (nose surgery).</p><a href="https://www.noormedwell.com/treatments/plastic-surgery-cosmetology/rhinoplasty-nose-surgery/" target="_blank" rel="noreferrer">Rhinoplasty details ↗</a><button type="button" data-treatment="Plastic Surgery & Cosmetology">Ask about this category →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">✦</div><div><h3>Hair Transplant</h3><p>Hair restoration options including FUE, DHI and Sapphire methods.</p><a href="https://www.noormedwell.com/treatments/hair-transplant/dhi-hair-transplant/" target="_blank" rel="noreferrer">DHI Hair Transplant details ↗</a><button type="button" data-treatment="Hair Transplant">Ask about this category →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">❋</div><div><h3>Stem Cell Therapy</h3><p>A regenerative medicine category. Specific applications and suitability require specialist assessment.</p><button type="button" data-treatment="Stem Cell Therapy">Ask about this category →</button></div></article>
+  <article class="journey-card"><div class="journey-symbol">☼</div><div><h3>Rejuvenation</h3><p>Anti-aging and rejuvenation treatment pathways. Available options depend on clinical assessment.</p><button type="button" data-treatment="Rejuvenation">Ask about this category →</button></div></article>`);
+ }
+}));
+journeyContent.addEventListener('click',e=>{
+ const treatment=e.target.closest('[data-treatment]')?.dataset.treatment;
+ if(treatment){closeJourney();$('concierge').scrollIntoView({behavior:'smooth',block:'start'});$('messageInput').value="Please explain Noor MedWell's "+treatment+" options, what they generally involve, who may be assessed for them, possible risks and recovery considerations, and what information a consultant would need. Do not diagnose or decide my suitability."; $('messageInput').focus();}
+ if(e.target.closest('[data-start-hospital-chat]'))startGuidedFlow('hospital');
+});
 
 function renderMessage(role,text){
  const row=document.createElement('div');row.className='message '+role;
