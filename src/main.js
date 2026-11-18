@@ -12,10 +12,10 @@ const languages = [
   ['fil','🇵🇭','Filipino'],['sw','🇰🇪','Kiswahili'],['ta','🇱🇰','தமிழ்'],['pa','🇮🇳','ਪੰਜਾਬੀ']
 ];
 const quickActions = [
-  ['▦','Book Consultation','I would like to book a consultation.'],
-  ['✚','Find Hospitals','Help me explore suitable hospitals in Turkey.'],
-  ['⚕','Explore Treatments','I would like to learn about treatment options.'],
-  ['◉','Patient Support','I need help with my medical journey.']
+  ['▦','Book Consultation','https://www.noormedwell.com/consultations/request/'],
+  ['✚','Find Hospitals','https://www.noormedwell.com/clinics/'],
+  ['⚕','Explore Treatments','https://www.noormedwell.com/treatments/'],
+  ['◉','Patient Support','https://wa.me/905428440488']
 ];
 const app = document.querySelector('#app');
 app.innerHTML = `
@@ -53,7 +53,7 @@ app.innerHTML = `
   </section>
 
   <section class="quick-grid" aria-label="Concierge services">
-    ${quickActions.map((a,i)=>`<button class="quick-card" data-prompt="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
+    ${quickActions.map((a,i)=>`<button class="quick-card" type="button" data-destination="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
   </section>
 
   <section class="language-strip" aria-label="Popular languages">
@@ -110,7 +110,7 @@ document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',(
 document.addEventListener('click',e=>{if(!e.target.closest('.language-wrap')&&!e.target.closest('#moreLanguages')){$('languageMenu').hidden=true;$('languageTrigger').setAttribute('aria-expanded','false');}});
 $('menuButton').addEventListener('click',()=>{$('mobileMenu').hidden=!$('mobileMenu').hidden;});
 document.querySelectorAll('.mobile-menu [data-scroll]').forEach(b=>b.addEventListener('click',()=>{$('concierge').scrollIntoView({behavior:'smooth'});$('mobileMenu').hidden=true;}));
-document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',()=>{ $('messageInput').value=b.dataset.prompt; $('messageInput').focus(); $('concierge').scrollIntoView({behavior:'smooth',block:'center'}); }));
+document.querySelectorAll('.quick-card').forEach(b=>b.addEventListener('click',()=>{ const destination=b.dataset.destination; if(destination) window.location.assign(destination); }));
 
 function renderMessage(role,text){
  const row=document.createElement('div');row.className='message '+role;
