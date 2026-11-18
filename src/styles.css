@@ -73,3 +73,84 @@
   .chat-heading{padding:5px 10px}
   .messages{min-height:34px;max-height:58px}
 }
+
+
+/* Final mobile fit: page stays within the phone viewport; only chat history scrolls. */
+@media (max-width:680px){
+  html,body{height:100%;min-height:100%;overflow:hidden}
+  #app{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+  .topbar{height:54px;min-height:54px;flex:none;padding:4px 4%}
+  .brand{width:min(220px,52vw)}
+  .brand img{max-height:43px}
+  .top-actions{gap:8px}
+  .language-trigger{height:34px;min-width:76px;padding:0 9px;font-size:11px}
+  .globe{font-size:17px}
+  .chevron{font-size:18px}
+  .menu-button{height:34px;width:30px;gap:5px}
+  .menu-button span{width:24px;height:2px}
+  .page{width:100%;height:calc(100dvh - 54px);min-height:0;flex:1;padding:0 10px 7px;display:flex;flex-direction:column;gap:6px;overflow:hidden}
+  .hero{height:clamp(178px,29dvh,210px);min-height:0;flex:none;border-radius:0 0 20px 20px}
+  .hero-copy{padding:12px 5%;max-width:92%}
+  .eyebrow{font-size:8px;letter-spacing:1.2px;margin-bottom:7px;gap:7px}
+  .eyebrow i{width:20px}
+  .hero h1{font-size:clamp(25px,6.8vw,32px);line-height:.94;letter-spacing:-.6px;margin:0 0 6px}
+  .hero-copy p{font-size:10px;line-height:1.15;margin:0 0 7px}
+  .gold-button{height:29px;padding:0 11px;gap:10px;font-size:10px}
+  .gold-button b{font-size:18px}
+  .hero-swoosh{bottom:-52px;height:65px;border-top-width:10px}
+  .welcome-card{height:clamp(94px,15dvh,112px);min-height:0;flex:none;margin:0;padding:3px 6px 0 0;border-radius:16px}
+  .portrait-wrap{width:35%;min-width:0}
+  .portrait-wrap img{max-height:100%;height:100%;object-fit:contain}
+  .welcome-copy{padding:4px 0 5px 2%}
+  .welcome-copy h2{font-size:17px;margin:0 0 2px}
+  .welcome-copy h3{font-size:clamp(13px,3.5vw,17px);line-height:1.08;margin:0 0 4px}
+  .welcome-copy p{font-size:9px;line-height:1.1;margin:0 0 3px}
+  .online{font-size:8px;padding:3px 7px;gap:5px}
+  .online i{width:5px;height:5px}
+  .welcome-leaf{font-size:32px;right:5px;top:3px}
+  .quick-grid{flex:none;gap:5px}
+  .quick-card{height:42px;min-height:0;padding:4px 7px;gap:7px;border-radius:12px;font-size:10px}
+  .quick-icon{width:29px;height:29px;font-size:16px}
+  .quick-card b{font-size:17px}
+  .language-strip{height:30px;min-height:30px;flex:none;margin:0;padding:1px 4px;border-radius:20px;gap:0}
+  .language-strip button{font-size:9px;padding:3px 2px;gap:3px}
+  .language-strip button span{font-size:14px}
+  .language-strip i{height:18px}
+  .language-strip button b{font-size:13px}
+  .privacy-banner{height:39px;min-height:39px;flex:none;padding:4px 8px;gap:7px;border-radius:12px}
+  .privacy-icon{width:25px;height:28px;font-size:14px}
+  .privacy-banner>i{height:24px}
+  .privacy-banner strong{font-size:10px}
+  .privacy-banner p{font-size:8px;line-height:1;margin:2px 0 0}
+  .privacy-leaf{font-size:27px}
+  .chat-panel{margin:0;flex:1 1 auto;min-height:125px;display:flex;flex-direction:column;border-radius:15px}
+  .chat-heading{flex:none;padding:5px 9px}
+  .chat-heading strong{font-size:11px}
+  .chat-heading small{font-size:8px}
+  .chat-heading button{font-size:18px}
+  .messages{flex:1 1 auto;min-height:25px;max-height:none;overflow-y:auto;padding:7px;gap:6px}
+  .message{max-width:94%;gap:6px}
+  .message-avatar{width:21px;height:21px;font-size:10px}
+  .bubble{padding:6px 8px;font-size:10px;line-height:1.3}
+  .composer{flex:none;margin:0 6px 4px;padding:3px 5px 3px 8px;gap:5px}
+  .attach-button{width:29px;height:31px;font-size:0;padding:4px}
+  .attach-button svg{width:22px;height:22px;display:block}
+  .composer textarea{font-size:11px;padding:5px 0;max-height:42px}
+  .send-button{width:34px;height:34px;font-size:17px}
+  .disclaimer{flex:none;font-size:7px;line-height:1.1;margin:0 5px 5px}
+  .language-menu{top:40px;right:-35px}
+}
+@media (max-width:680px) and (max-height:680px){
+  .topbar{height:48px;min-height:48px}
+  .page{height:calc(100dvh - 48px);padding-bottom:4px;gap:4px}
+  .hero{height:clamp(158px,27dvh,180px)}
+  .hero-copy{padding:8px 5%}
+  .hero h1{font-size:clamp(23px,6.2vw,28px)}
+  .welcome-card{height:88px}
+  .welcome-copy p{display:none}
+  .quick-card{height:37px}
+  .quick-icon{width:25px;height:25px}
+  .language-strip{height:26px;min-height:26px}
+  .privacy-banner{height:34px;min-height:34px}
+  .chat-panel{min-height:115px}
+}
