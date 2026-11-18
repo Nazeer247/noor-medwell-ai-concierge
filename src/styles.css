@@ -277,3 +277,19 @@ body.panel-open{overflow:hidden}
 .partner-logo img{display:block;width:100%;height:52px;object-fit:contain}
 .partners-section>small{display:block;margin-top:13px;color:#948879;font-size:10px;line-height:1.4}
 @media(max-width:520px){.partners-section{padding:16px;margin:16px 0}.partner-logos{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.partner-logo{min-height:66px;padding:9px}.partner-logo img{height:44px}}
+
+
+/* Compact layout: remove unused long-form journey spacing and keep chat close to actions */
+.page{padding-bottom:18px}
+.quick-grid{margin-bottom:14px}
+.chat-panel{margin-top:14px}
+.partner-picker-title{margin:14px 0 5px;font:600 18px 'Playfair Display',serif;color:#49371f}
+.partner-picker-intro{margin:0 0 10px;color:#716657;font-size:12px;line-height:1.5}
+.partner-interest-list{display:grid;gap:9px}
+.partner-interest-card{display:grid;grid-template-columns:112px minmax(0,1fr);gap:13px;align-items:center;padding:12px;border:1px solid #e8dece;border-radius:15px;background:#fffdf9}
+.partner-logo-wrap{display:grid;place-items:center;min-height:66px;padding:8px;border:1px solid #f0e9df;border-radius:10px;background:#fff}
+.partner-logo-wrap img{display:block;max-width:100%;width:100%;height:48px;object-fit:contain}
+.partner-interest-copy h3{margin:0 0 4px;font:600 15px 'Playfair Display',serif;color:#49371f}
+.partner-interest-copy p{margin:0 0 8px;color:#716657;font-size:11px;line-height:1.45}
+.partner-interest-copy button{border:1px solid #b18a4e;border-radius:999px;padding:7px 11px;background:#f6eddf;color:#5d4525;font-size:11px;font-weight:600}
+@media(max-width:420px){.partner-interest-card{grid-template-columns:82px minmax(0,1fr);gap:9px;padding:9px}.partner-logo-wrap{min-height:58px;padding:5px}.partner-logo-wrap img{height:40px}.partner-interest-copy h3{font-size:13px}}
