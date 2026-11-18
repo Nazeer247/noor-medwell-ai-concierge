@@ -124,7 +124,7 @@ async function sendMessage(){
  messages.push({role:'user',content:text});renderMessage('user',text);$('messageInput').value='';setBusy(true);
  const typing=document.createElement('div');typing.className='message assistant typing';typing.innerHTML='<div class="message-avatar">N</div><div class="bubble">Preparing your response…</div>';$('messages').append(typing);
  try{
-  const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages})});
+  const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,language:languages.find(x=>x[0]===selectedLanguage)?.[2]||'English'})});
   const data=await response.json();typing.remove();
   if(!response.ok)throw new Error(data.error||'The concierge is temporarily unavailable.');
   messages.push({role:'assistant',content:data.reply});renderMessage('assistant',data.reply);
