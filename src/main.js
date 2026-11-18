@@ -100,13 +100,41 @@ const languageGrid = $('languageGrid');
 languageGrid.innerHTML = languages.map(([code,flag,name])=>`<button class="language-option" data-lang="${code}"><span>${flag}</span>${name}</button>`).join('');
 
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);}
+let translationRun=0;
+async function translateInterface(){
+ const run=++translationRun;
+ const lang=languages.find(x=>x[0]===selectedLanguage);if(!lang)return;
+ document.documentElement.lang=selectedLanguage;
+ document.documentElement.dir=['ar','fa','ur','he'].includes(selectedLanguage)?'rtl':'ltr';
+ const nodes=[];
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ while(walker.nextNode()){
+  const n=walker.currentNode;
+  if(n.nodeValue.trim() && !n.parentElement.closest('script,style,.language-option'))nodes.push(n);
+ }
+ const attrs=[];
+ document.querySelectorAll('input,textarea,button,[aria-label],[title],img').forEach(el=>{
+  ['placeholder','aria-label','title','alt'].forEach(a=>{if(el.hasAttribute(a)&&el.getAttribute(a).trim())attrs.push([el,a,el.getAttribute(a)]);});
+ });
+ const originals=[...nodes.map(n=>n.nodeValue),...attrs.map(x=>x[2])];
+ if(selectedLanguage==='en'){nodes.forEach((n,i)=>n.nodeValue=originals[i]);attrs.forEach((x,i)=>x[0].setAttribute(x[1],originals[nodes.length+i]));return;}
+ const translated=[];
+ for(let i=0;i<originals.length;i+=100){
+  const response=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:lang[2],texts:originals.slice(i,i+100)})});
+  if(!response.ok)throw new Error('Translation service unavailable');
+  const data=await response.json();translated.push(...data.translations);
+  if(run!==translationRun)return;
+ }
+ if(translated.length!==originals.length)throw new Error('Incomplete translation');
+ nodes.forEach((n,i)=>n.nodeValue=translated[i]);
+ attrs.forEach((x,i)=>x[0].setAttribute(x[1],translated[nodes.length+i]));
+}
 function selectLanguage(code){
-  const lang=languages.find(x=>x[0]===code);if(!lang)return;
-  selectedLanguage=code;$('currentLanguage').textContent=code.toUpperCase();
-  document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('selected',b.dataset.lang===code));
-  $('languageMenu').hidden=true;$('languageTrigger').setAttribute('aria-expanded','false');
-  $('messageInput').placeholder=code==='tr'?'Hastaneler, tedaviler veya sağlık yolculuğunuz hakkında sorun...':code==='de'?'Fragen Sie nach Kliniken, Behandlungen oder Ihrer medizinischen Reise...':code==='fr'?'Posez vos questions sur les hôpitaux, les traitements ou votre parcours médical...':'Ask about hospitals, treatments or your medical journey...';
-  toast('Language selected: '+lang[2]+'. The concierge will reply in your chosen language.');
+ const lang=languages.find(x=>x[0]===code);if(!lang)return;
+ selectedLanguage=code;$('currentLanguage').textContent=code.toUpperCase();
+ document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('selected',b.dataset.lang===code));
+ $('languageMenu').hidden=true;$('languageTrigger').setAttribute('aria-expanded','false');
+ translateInterface().then(()=>toast('Language changed to '+lang[2]+'.')).catch(()=>toast('Could not translate the page. Please try again.'));
 }
 $('languageTrigger').addEventListener('click',()=>{const m=$('languageMenu');m.hidden=!m.hidden;$('languageTrigger').setAttribute('aria-expanded',String(!m.hidden));});
 $('moreLanguages').addEventListener('click',()=>{$('languageMenu').hidden=false;$('languageTrigger').setAttribute('aria-expanded','true');$('languageMenu').scrollIntoView({block:'nearest'});});
@@ -116,7 +144,7 @@ $('menuButton').addEventListener('click',()=>{$('mobileMenu').hidden=!$('mobileM
 document.querySelectorAll('.mobile-menu [data-scroll]').forEach(b=>b.addEventListener('click',()=>{$('concierge').scrollIntoView({behavior:'smooth'});$('mobileMenu').hidden=true;}));
 const journeyPanel=$('journeyPanel'), journeyContent=$('journeyContent');
 function closeJourney(){journeyPanel.hidden=true;document.body.classList.remove('panel-open');}
-function openJourney(title,html){$('journeyTitle').textContent=title;journeyContent.innerHTML=html;journeyPanel.hidden=false;document.body.classList.add('panel-open');journeyContent.scrollTop=0;}
+function openJourney(title,html){$('journeyTitle').textContent=title;journeyContent.innerHTML=html;journeyPanel.hidden=false;document.body.classList.add('panel-open');journeyContent.scrollTop=0;translateInterface().catch(()=>{});}
 journeyPanel.addEventListener('click',e=>{if(e.target.closest('[data-close-panel]'))closeJourney();});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeJourney();});
 function startGuidedFlow(kind){
