@@ -76,7 +76,7 @@ app.innerHTML = `
     </div>
     <div class="attachment-preview" id="attachmentPreview" hidden></div>
     <div class="composer">
-      <label class="attach-button" for="imageInput" title="Attach a medical image"><span>▧</span><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label>
+      <label class="attach-button" for="imageInput" title="Attach a medical image" aria-label="Attach an image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2.5"></rect><circle cx="8.5" cy="9" r="1.5"></circle><path d="m21 15-5-5L5 20"></path></svg><input id="imageInput" type="file" accept="image/png,image/jpeg,image/webp" hidden></label>
       <textarea id="messageInput" rows="1" placeholder="Ask about hospitals, treatments or your medical journey..." aria-label="Write a message"></textarea>
       <button class="send-button" id="sendButton" aria-label="Send message">➤</button>
     </div>
