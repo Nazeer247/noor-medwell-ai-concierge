@@ -56,7 +56,24 @@ app.innerHTML = `
     ${quickActions.map((a,i)=>`<button class="quick-card" type="button" data-action="${a[2]}"><span class="quick-icon">${a[0]}</span><span>${a[1]}</span><b>›</b></button>`).join('')}
   </section>
 
-  <section class="how-we-work" aria-labelledby="howWeWorkTitle">
+  <section class="partners-section" aria-labelledby="partnersTitle">
+  <div class="section-kicker">A NETWORK BUILT AROUND PATIENT NEEDS</div>
+  <h2 id="partnersTitle">Our Partners</h2>
+  <p>We coordinate with trusted hospital groups and care institutions across Turkey and the wider medical travel network. Noor MedWell helps you navigate your options and remains your coordination contact throughout the journey.</p>
+  <div class="partner-logos" aria-label="Noor MedWell partner institutions">
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-1.png" alt="Noor MedWell partner institution 1" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-2.png" alt="Noor MedWell partner institution 2" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-3.png" alt="Noor MedWell partner institution 3" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-4.png" alt="Noor MedWell partner institution 4" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-5.png" alt="Noor MedWell partner institution 5" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-6.png" alt="Noor MedWell partner institution 6" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-7.png" alt="Noor MedWell partner institution 7" loading="lazy"></div>
+    <div class="partner-logo"><img src="https://www.noormedwell.com/static/images/partners/partner-8.png" alt="Noor MedWell partner institution 8" loading="lazy"></div>
+  </div>
+  <small>Partner logos are displayed as provided on Noor MedWell's official website. Provider selection and availability are confirmed individually.</small>
+</section>
+
+<section class="how-we-work" aria-labelledby="howWeWorkTitle">
   <div class="section-kicker">A CLEAR, SUPPORTED PROCESS</div>
   <h2 id="howWeWorkTitle">How We Work</h2>
   <p class="how-intro">A discreet, end-to-end medical journey. We combine clinical matching, travel coordination, multilingual support and post-treatment follow-up so every stage feels structured and reassuring.</p>
