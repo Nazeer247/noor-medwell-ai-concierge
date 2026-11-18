@@ -101,23 +101,33 @@ languageGrid.innerHTML = languages.map(([code,flag,name])=>`<button class="langu
 
 function toast(message){const el=$('toast');el.textContent=message;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3200);}
 let translationRun=0;
+const originalText=new WeakMap(),originalAttrs=new WeakMap();
 async function translateInterface(){
- const run=++translationRun;
- const lang=languages.find(x=>x[0]===selectedLanguage);if(!lang)return;
+ const run=++translationRun,lang=languages.find(x=>x[0]===selectedLanguage);if(!lang)return;
  document.documentElement.lang=selectedLanguage;
  document.documentElement.dir=['ar','fa','ur','he'].includes(selectedLanguage)?'rtl':'ltr';
- const nodes=[];
- const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ const nodes=[],walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
  while(walker.nextNode()){
   const n=walker.currentNode;
-  if(n.nodeValue.trim() && !n.parentElement.closest('script,style,.language-option'))nodes.push(n);
+  if(n.nodeValue.trim()&&!n.parentElement.closest('script,style,.language-option')){
+   if(!originalText.has(n))originalText.set(n,n.nodeValue);
+   nodes.push(n);
+  }
  }
  const attrs=[];
  document.querySelectorAll('input,textarea,button,[aria-label],[title],img').forEach(el=>{
-  ['placeholder','aria-label','title','alt'].forEach(a=>{if(el.hasAttribute(a)&&el.getAttribute(a).trim())attrs.push([el,a,el.getAttribute(a)]);});
+  ['placeholder','aria-label','title','alt'].forEach(a=>{
+   if(el.hasAttribute(a)&&el.getAttribute(a).trim()){
+    let saved=originalAttrs.get(el);if(!saved){saved={};originalAttrs.set(el,saved);}
+    if(!(a in saved))saved[a]=el.getAttribute(a);
+    attrs.push([el,a,saved[a]]);
+   }
+  });
  });
- const originals=[...nodes.map(n=>n.nodeValue),...attrs.map(x=>x[2])];
- if(selectedLanguage==='en'){nodes.forEach((n,i)=>n.nodeValue=originals[i]);attrs.forEach((x,i)=>x[0].setAttribute(x[1],originals[nodes.length+i]));return;}
+ const originals=[...nodes.map(n=>originalText.get(n)),...attrs.map(x=>x[2])];
+ if(selectedLanguage==='en'){
+  nodes.forEach(n=>n.nodeValue=originalText.get(n));attrs.forEach(x=>x[0].setAttribute(x[1],x[2]));return;
+ }
  const translated=[];
  for(let i=0;i<originals.length;i+=100){
   const response=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:lang[2],texts:originals.slice(i,i+100)})});
