@@ -215,3 +215,34 @@
   .welcome-card{height:108px}
   .messages{min-height:125px;max-height:38dvh}
 }
+
+
+/* In-chat patient journey panels */
+.journey-panel[hidden]{display:none}
+.journey-panel{position:fixed;inset:0;z-index:80;display:flex;align-items:flex-end;justify-content:center}
+.journey-backdrop{position:absolute;inset:0;background:rgba(25,20,14,.52);backdrop-filter:blur(3px)}
+.journey-sheet{position:relative;width:min(760px,100%);max-height:min(86dvh,900px);display:flex;flex-direction:column;background:#fffaf2;border:1px solid #e5d8c3;border-radius:28px 28px 0 0;box-shadow:0 -16px 55px #1d160d35;overflow:hidden}
+.journey-sheet>header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 22px;border-bottom:1px solid #e8ddcd;background:linear-gradient(110deg,#fffaf2,#f5ead8)}
+.journey-sheet header small{font-size:10px;letter-spacing:1.8px;font-weight:700;color:#97733d}
+.journey-sheet header h2{margin:5px 0 0;font:600 23px 'Playfair Display',serif;color:#33291c}
+.journey-close{width:38px;height:38px;border:1px solid #e5d8c3;border-radius:50%;background:#fff;color:#72562f;font-size:26px;cursor:pointer}
+.journey-content{overflow:auto;padding:16px 18px 24px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.journey-intro{margin:0 0 15px;color:#716657;font-size:13px;line-height:1.5}
+.journey-card{display:flex;gap:14px;margin:0 0 12px;padding:12px;border:1px solid #e8dece;border-radius:17px;background:#fff;box-shadow:0 3px 10px #4e38100b}
+.journey-card>img{width:112px;height:100px;flex:none;object-fit:cover;border-radius:12px;background:#eee5d7}
+.journey-symbol{width:42px;height:42px;flex:none;border-radius:50%;display:grid;place-items:center;background:#f1e4ce;color:#94703a;font-size:22px}
+.journey-card h3{margin:1px 0 5px;color:#3d3020;font:600 17px 'Playfair Display',serif}
+.journey-card p{margin:0 0 8px;color:#716657;font-size:12px;line-height:1.45}
+.journey-card a,.journey-card button{display:inline-block;margin:3px 10px 0 0;padding:0;border:0;background:none;color:#8a642e;font:700 12px 'DM Sans';text-decoration:none;cursor:pointer}
+.journey-primary{width:100%;padding:13px 18px;border:0;border-radius:28px;background:linear-gradient(120deg,#b78a45,#795622);color:white;font:600 14px 'DM Sans';cursor:pointer}
+body.panel-open{overflow:hidden}
+@media(max-width:680px){
+ .journey-sheet{max-height:90dvh;border-radius:23px 23px 0 0}
+ .journey-sheet>header{padding:14px 16px}
+ .journey-sheet header h2{font-size:20px}
+ .journey-content{padding:12px 12px 20px}
+ .journey-card{gap:10px;padding:9px}
+ .journey-card>img{width:88px;height:88px}
+ .journey-card h3{font-size:15px}
+ .journey-card p{font-size:11px}
+}
