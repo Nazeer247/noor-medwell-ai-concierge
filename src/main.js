@@ -105,7 +105,9 @@ const originalText=new WeakMap(),originalAttrs=new WeakMap();
 async function translateInterface(){
  const run=++translationRun,lang=languages.find(x=>x[0]===selectedLanguage);if(!lang)return;
  document.documentElement.lang=selectedLanguage;
- document.documentElement.dir=['ar','fa','ur','he'].includes(selectedLanguage)?'rtl':'ltr';
+ const rtl=['ar','fa','ur','he'].includes(selectedLanguage);
+ document.documentElement.dir=rtl?'rtl':'ltr';
+ document.body.classList.toggle('rtl-language',rtl);
  const nodes=[],walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
  while(walker.nextNode()){
   const n=walker.currentNode;
@@ -126,16 +128,24 @@ async function translateInterface(){
  });
  const originals=[...nodes.map(n=>originalText.get(n)),...attrs.map(x=>x[2])];
  if(selectedLanguage==='en'){
-  nodes.forEach(n=>n.nodeValue=originalText.get(n));attrs.forEach(x=>x[0].setAttribute(x[1],x[2]));return;
+  nodes.forEach(n=>n.nodeValue=originalText.get(n));
+  attrs.forEach(x=>x[0].setAttribute(x[1],x[2]));
+  return;
  }
  const translated=[];
- for(let i=0;i<originals.length;i+=100){
-  const response=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:lang[2],texts:originals.slice(i,i+100)})});
-  if(!response.ok)throw new Error('Translation service unavailable');
-  const data=await response.json();translated.push(...data.translations);
+ // Smaller batches reduce the chance of provider token limits and keep the UI responsive.
+ for(let i=0;i<originals.length;i+=30){
+  const response=await fetch('/api/translate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:lang[2],texts:originals.slice(i,i+30)})});
+  const raw=await response.text();
+  let data;
+  try{data=raw?JSON.parse(raw):{};}catch{throw new Error('The translation API returned a webpage instead of JSON (HTTP '+response.status+').');}
+  if(!response.ok)throw new Error(data.error||('Translation failed (HTTP '+response.status+').'));
+  if(!Array.isArray(data.translations))throw new Error(data.error||'The translation service returned an invalid response.');
+  translated.push(...data.translations);
   if(run!==translationRun)return;
  }
- if(translated.length!==originals.length)throw new Error('Incomplete translation');
+ if(translated.length!==originals.length)throw new Error('The translation service returned an incomplete translation.');
+ if(run!==translationRun)return;
  nodes.forEach((n,i)=>n.nodeValue=translated[i]);
  attrs.forEach((x,i)=>x[0].setAttribute(x[1],translated[nodes.length+i]));
 }
@@ -144,7 +154,8 @@ function selectLanguage(code){
  selectedLanguage=code;$('currentLanguage').textContent=code.toUpperCase();
  document.querySelectorAll('[data-lang]').forEach(b=>b.classList.toggle('selected',b.dataset.lang===code));
  $('languageMenu').hidden=true;$('languageTrigger').setAttribute('aria-expanded','false');
- translateInterface().then(()=>toast('Language changed to '+lang[2]+'.')).catch(()=>toast('Could not translate the page. Please try again.'));
+ toast('Translating page to '+lang[2]+'…');
+ translateInterface().then(()=>toast('Page language changed to '+lang[2]+'.')).catch(error=>toast(error.message||'Could not translate the page. Please try again.'));
 }
 $('languageTrigger').addEventListener('click',()=>{const m=$('languageMenu');m.hidden=!m.hidden;$('languageTrigger').setAttribute('aria-expanded',String(!m.hidden));});
 $('moreLanguages').addEventListener('click',()=>{$('languageMenu').hidden=false;$('languageTrigger').setAttribute('aria-expanded','true');$('languageMenu').scrollIntoView({block:'nearest'});});
