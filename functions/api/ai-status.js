@@ -14,7 +14,7 @@ export async function onRequestGet({ env }) {
   }
 
   try {
-    const baseUrl = String(env.AI_BASE_URL).replace(/\\/$/, "");
+    const baseUrl = String(env.AI_BASE_URL).replace(/\/$/, "");
     const response = await fetch(baseUrl + "/models", {
       method: "GET",
       headers: { Authorization: "Bearer " + env.AI_API_KEY }
