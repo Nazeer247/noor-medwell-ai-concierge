@@ -265,7 +265,18 @@ async function sendMessage(){
  try{
   const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,language:languages.find(x=>x[0]===selectedLanguage)?.[2]||'English'})});
   const data=await response.json();typing.remove();
-  if(!response.ok)throw new Error(data.error||'The concierge is temporarily unavailable.');
+  if(!response.ok){
+   let detail=data.error||'The concierge is temporarily unavailable.';
+   if(data.configured){
+    detail+='\\nCloudflare runtime checks: API key '+(data.configured.apiKey?'available':'MISSING')+
+      ', base URL '+(data.configured.baseUrl?'available':'MISSING')+
+      ', model '+(data.configured.model?'available':'MISSING')+'.';
+   }
+   if(data.providerStatus)detail+='\\nGroq HTTP status: '+data.providerStatus+'.';
+   if(data.providerMessage)detail+='\\nProvider detail: '+data.providerMessage;
+   if(data.detail)detail+='\\nConnection detail: '+data.detail;
+   throw new Error(detail);
+  }
   messages.push({role:'assistant',content:data.reply});renderMessage('assistant',data.reply);
  }catch(err){typing.remove();renderMessage('assistant',err.message||'I could not connect just now. Please try again or contact our team through WhatsApp.');}
  finally{setBusy(false);}
