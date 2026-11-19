@@ -257,6 +257,14 @@ function renderMessage(role,text){
  const bubble=document.createElement('div');bubble.className='bubble';bubble.textContent=text;row.append(bubble);$('messages').append(row);$('messages').scrollTop=$('messages').scrollHeight;
 }
 function setBusy(value){busy=value;$('sendButton').disabled=value;$('sendButton').textContent=value?'…':'➤';}
+async function readApiJson(response, endpoint){
+ const raw=await response.text();
+ try{return raw?JSON.parse(raw):{};}
+ catch{
+  const type=response.headers.get('content-type')||'unknown content type';
+  throw new Error(endpoint+' returned a webpage instead of JSON (HTTP '+response.status+', '+type+'). This usually means Cloudflare served an error page instead of the API function. Please try once more; if it repeats, the deployment or API route needs checking.');
+ }
+}
 async function sendMessage(){
  const text=$('messageInput').value.trim();if(!text||busy)return;
  if(attachment){toast('Image preview is local only in this version. Please remove it before sending text, or contact the care team to share medical records securely.');return;}
@@ -264,7 +272,7 @@ async function sendMessage(){
  const typing=document.createElement('div');typing.className='message assistant typing';typing.innerHTML='<div class="message-avatar">N</div><div class="bubble">Preparing your response…</div>';$('messages').append(typing);
  try{
   const response=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages,language:languages.find(x=>x[0]===selectedLanguage)?.[2]||'English'})});
-  const data=await response.json();typing.remove();
+  const data=await readApiJson(response,'/api/chat');typing.remove();
   if(!response.ok){
    let detail=data.error||'The concierge is temporarily unavailable.';
    if(data.configured){
